@@ -1,0 +1,67 @@
+[
+  {
+    "name": "allen",
+    "head": "img/1.jpg",
+    "intimacy": 10
+  },
+  {
+    "name": "tina",
+    "head": "img/2.jpg",
+    "intimacy": 50
+  },
+  {
+    "name": "lind",
+    "head": "img/3.jpg",
+    "intimacy": 75
+  },
+  {
+    "name": "kevin",
+    "head": "img/4.jpg",
+    "intimacy": 35
+  },
+  {
+    "name": "helix",
+    "head": "img/5.jpg",
+    "intimacy": 62
+  },
+  {
+    "name": "jack",
+    "head": "img/6.jpg",
+    "intimacy": 112
+  },
+  {
+    "name": "july",
+    "head": "img/7.jpg",
+    "intimacy": 88
+  },
+  {
+    "name": "kate",
+    "head": "img/8.jpg",
+    "intimacy": 15
+  },
+  {
+    "name": "wanner",
+    "head": "img/9.jpg",
+    "intimacy": 218
+  },
+  {
+    "name": "owner",
+    "head": "img/10.jpg",
+    "intimacy": 166
+  },
+  {
+    "name": "kate",
+    "head": "img/8.jpg",
+    "intimacy": 92
+  },
+  {
+    "name": "wanner",
+    "head": "img/9.jpg",
+    "intimacy": 177
+  },
+  {
+    "name": "owner",
+    "head": "img/10.jpg",
+    "intimacy": 109
+  }
+]
