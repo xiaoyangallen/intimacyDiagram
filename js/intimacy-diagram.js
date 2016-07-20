@@ -4,11 +4,21 @@
 
 $(document).ready(function () {
 
+    if (SVG.supported===false) {
+        alert('SVG not supported');
+        return;
+    }
+
     var width = window.innerWidth;
     var height = window.innerHeight;
 
-    var draw = SVG('drawing').size(width, height);
+    var draw = SVG('drawing').size(width, height).spof();//spof 像素偏移修正
 
+    //var nested = draw.nested();
+    //
+    //var group = draw.group();
+    //
+    //var rect = nested.rect(200,800);
     //屏蔽元素的方法
     var ellipse = draw.ellipse(0, 0).move(10, 10).fill({color: '#fff'});
 
@@ -43,10 +53,10 @@ $(document).ready(function () {
      y: r * 6
      };*/
 
-     var centerid = {
-         x: width/2,
-         y: height/2
-     };
+    var centerid = {
+        x: width/2,
+        y: height/2
+    };
 
 
     /**
@@ -191,7 +201,7 @@ $(document).ready(function () {
                 var c1 = draw.circle(diameter).center(centerid.x, centerid.y);
                 c1.fill({color: "#0067AA"})
                     .animate(500).center(this.x, this.y);
-                ;
+
                 var cir = draw.circle(diameter - 4).center(centerid.x, centerid.y);
                 if (this.image) {
 
@@ -223,7 +233,7 @@ $(document).ready(function () {
                 return this.line;
             },
 
-            Init: function (linex, liney) {
+            Init: function () {
 
                 var cirs = this.drawInstance();
                 var cir_bg = cirs.bg;
@@ -231,41 +241,67 @@ $(document).ready(function () {
                 var diameter = this.radius * 2;
                 var img_src = this.image;
 
-                var sx = this.x + Math.cos(0 / 180 * Math.PI) * (r / 2) - 4;
-                var sy = this.y + Math.sin(0 / 180 * Math.PI) * (r / 2);
 
-                var x = centerid.x + Math.cos(0 / 180 * Math.PI) * r * 5;
-                var y = centerid.y + Math.sin(0 / 180 * Math.PI) * r * 5;
+                //连线 右侧 人员到 中心边界 到 详细信息矩形
+                var rsx = this.x + Math.cos(0 / 180 * Math.PI) * (r / 2);
+                var rsy = this.y + Math.sin(0 / 180 * Math.PI) * (r / 2);
 
-                var lineRightBegin = draw.line(sx, sy, x, y).stroke({width: 2, color: lineColor}).hide();
-                var lineRightEnd = draw.line(x - 1, y, x + r * 2, y).stroke({width: 2, color: lineColor}).hide();
+                var rx = centerid.x + Math.cos(0 / 180 * Math.PI) * r * 5;
+                var ry = centerid.y + Math.sin(0 / 180 * Math.PI) * r * 5;
 
-                var lineLeftBegin = draw.line(sx, sy, x, y).stroke({width: 2, color: lineColor}).hide();
-                var lineLeftEnd = draw.line(x - 1, y, x + r * 2, y).stroke({width: 2, color: lineColor}).hide();
+                var lineRightBegin = draw.line(rsx-8, rsy, rx, ry).stroke({width: 2, color: lineColor}).hide();
+                var lineRightEnd = draw.line(rx - 1, ry, rx + r * 2, ry).stroke({width: 2, color: lineColor}).hide();
+
+                //连线 左侧侧 人员到 中心边界 到 详细信息矩形
+                var lsx = this.x + Math.cos(0 / 180 * Math.PI) * (r / 2);
+                var lsy = this.y + Math.sin(0 / 180 * Math.PI) * (r / 2);
+
+                var lx = centerid.x - Math.cos(0 / 180 * Math.PI) * r * 5;
+                var ly = centerid.y + Math.sin(0 / 180 * Math.PI) * r * 5;
+
+
+                var lineLeftBegin = draw.line(lsx-r+8, lsy, lx, ly).stroke({width: 2, color: lineColor}).hide();
+                var lineLeftEnd = draw.line( lx - r * 2, ly,lx , ly).stroke({width: 2, color: lineColor}).hide();
 
 
                 console.log(r);
-                var detail_rect = draw.rect(r * 5, r * 9).center(centerid.x * 2 + r * 2.5, centerid.y).stroke(lineColor).fill("#fff").hide();
+                var r_detail_rect = draw.rect(r * 4, r * 10).center( rx + r*2.5, centerid.y).stroke(lineColor).fill("#fff").hide();
+                var l_detail_rect = draw.rect(r * 4, r * 10).center( rx + r*2.5, centerid.y).stroke(lineColor).fill("#fff").hide();
 
-                cir_img.on("mouseover", function (e) {
+                cir_img.on("click", function (e) {
 
-                    if(e.layerX>e.target.cx.animVal.value){
+                    if(e.target.cx.animVal.value>centerid.x){
                         lineRightBegin.show();
                         lineRightEnd.show();
+                        r_detail_rect.show();
                     }else{
-
+                        lineLeftBegin.show();
+                        lineLeftEnd.show();
+                        l_detail_rect.show();
                     }
                     cir_bg.fill({color: lineColor});
-                    detail_rect.show();
                 });
 
                 cir_img.on("mouseout", function (e) {
 
                     cir_bg.fill({color: "#0067AA"});
                     cir_img.fill(draw.image(img_src, diameter, diameter));
-                    lineRightBegin.hide();
-                    lineRightEnd.hide();
-                    detail_rect.hide();
+                    //lineRightBegin.hide();
+                    //lineRightEnd.hide();
+                    //lineLeftBegin.hide();
+                    //lineLeftEnd.hide();
+
+                    //detail_rect.hide();
+
+                });
+
+                draw.click(function(e){
+                    var r = e.target.getAttribute("r");
+                    console.log(cradius+" " +r);
+                    if(r!==cradius-2+""||r===null){
+                        alert("click body");
+
+                    }
 
                 });
 
@@ -333,9 +369,7 @@ $(document).ready(function () {
                 c.y = y;
                 c.Init(linex, liney);
 
-
             }
-
 
             /*for (var j = 0; j < 3; j++) {
              var templen = centerLength + cradius * j;
