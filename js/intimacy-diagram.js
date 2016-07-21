@@ -4,15 +4,52 @@
 
 $(document).ready(function () {
 
-    if (SVG.supported===false) {
+    //判断浏览器是否支持SVG
+    if (SVG.supported === false) {
         alert('SVG not supported');
         return;
     }
+    //初始化参数
+    var params = {};
+    var draw = SVG('drawing').spof();//spof 像素偏移修正
+
+
+    $(window).resize(function () {
+
+        initParams();
+
+
+    });
+
+    /**
+     * 初始化全局参数
+     */
+    function initParams() {
+        //初始化参数信息
+        params = {
+            w: window.innerWidth,
+            h: window.innerHeight,
+            cx: this.w / 2,
+            cy: this.h / 2,
+            r:function(){
+                if(this.w>this.h){
+                    return this.h/15;
+                }else{
+                    return this.w/15;
+                }
+            }
+        };
+        draw = draw.size(params.w, params.h);
+
+        //绘制场景图
+    }
+
+    //初始化调用
+    initParams();
 
     var width = window.innerWidth;
     var height = window.innerHeight;
 
-    var draw = SVG('drawing').size(width, height).spof();//spof 像素偏移修正
 
     //var nested = draw.nested();
     //
@@ -23,7 +60,9 @@ $(document).ready(function () {
     var ellipse = draw.ellipse(0, 0).move(10, 10).fill({color: '#fff'});
 
 
-    var r = 80;//半径 可控变量
+    var r = params.r();//半径 可控变量
+
+    console.log(r);
 
     var diameter = r;    //直径
 
@@ -54,8 +93,8 @@ $(document).ready(function () {
      };*/
 
     var centerid = {
-        x: width/2,
-        y: height/2
+        x: width / 2,
+        y: height / 2
     };
 
 
@@ -148,7 +187,7 @@ $(document).ready(function () {
         var width = r;
         var height = r / 2;
 
-        var cx = centerid.x  + r*7;
+        var cx = centerid.x + r * 7;
         var cy = r;
 
         return {
@@ -178,7 +217,6 @@ $(document).ready(function () {
     function drawRadar() {
 
         for (var i = 0; i < 360; i++) {
-
 
 
         }
@@ -249,7 +287,7 @@ $(document).ready(function () {
                 var rx = centerid.x + Math.cos(0 / 180 * Math.PI) * r * 5;
                 var ry = centerid.y + Math.sin(0 / 180 * Math.PI) * r * 5;
 
-                var lineRightBegin = draw.line(rsx-8, rsy, rx, ry).stroke({width: 2, color: lineColor}).hide();
+                var lineRightBegin = draw.line(rsx - 8, rsy, rx, ry).stroke({width: 2, color: lineColor}).hide();
                 var lineRightEnd = draw.line(rx - 1, ry, rx + r * 2, ry).stroke({width: 2, color: lineColor}).hide();
 
                 //连线 左侧侧 人员到 中心边界 到 详细信息矩形
@@ -260,21 +298,21 @@ $(document).ready(function () {
                 var ly = centerid.y + Math.sin(0 / 180 * Math.PI) * r * 5;
 
 
-                var lineLeftBegin = draw.line(lsx-r+8, lsy, lx, ly).stroke({width: 2, color: lineColor}).hide();
-                var lineLeftEnd = draw.line( lx - r * 2, ly,lx , ly).stroke({width: 2, color: lineColor}).hide();
+                var lineLeftBegin = draw.line(lsx - r + 8, lsy, lx, ly).stroke({width: 2, color: lineColor}).hide();
+                var lineLeftEnd = draw.line(lx - r * 2, ly, lx, ly).stroke({width: 2, color: lineColor}).hide();
 
 
                 console.log(r);
-                var r_detail_rect = draw.rect(r * 4, r * 10).center( rx + r*2.5, centerid.y).stroke(lineColor).fill("#fff").hide();
-                var l_detail_rect = draw.rect(r * 4, r * 10).center( rx + r*2.5, centerid.y).stroke(lineColor).fill("#fff").hide();
+                var r_detail_rect = draw.rect(r * 4, r * 10).center(rx + r * 2.5, centerid.y).stroke(lineColor).fill("#fff").hide();
+                var l_detail_rect = draw.rect(r * 4, r * 10).center(rx + r * 2.5, centerid.y).stroke(lineColor).fill("#fff").hide();
 
                 cir_img.on("click", function (e) {
 
-                    if(e.target.cx.animVal.value>centerid.x){
+                    if (e.target.cx.animVal.value > centerid.x) {
                         lineRightBegin.show();
                         lineRightEnd.show();
                         r_detail_rect.show();
-                    }else{
+                    } else {
                         lineLeftBegin.show();
                         lineLeftEnd.show();
                         l_detail_rect.show();
@@ -295,11 +333,11 @@ $(document).ready(function () {
 
                 });
 
-                draw.click(function(e){
+                draw.click(function (e) {
                     var r = e.target.getAttribute("r");
-                    console.log(cradius+" " +r);
-                    if(r!==cradius-2+""||r===null){
-                        alert("click body");
+                    console.log(cradius + " " + r);
+                    if (r !== cradius - 2 + "" || r === null) {
+                        //alert("click body");
 
                     }
 
